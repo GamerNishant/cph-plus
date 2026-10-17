@@ -5,6 +5,7 @@ import path from 'path';
 import fs from 'fs';
 import * as vscode from 'vscode';
 import localize from './i18n';
+import { clampFontSize, DEFAULT_FONT_FAMILY } from './fonts';
 
 const getPreference = (section: prefSection): any => {
     const ret = workspace.getConfiguration('cph').get(section);
@@ -108,15 +109,8 @@ export const getRemoteServerAddressPref = (): string =>
 export const getLiveUserCountPref = (): boolean =>
     getPreference('general.showLiveUserCount') || false;
 
-export const DEFAULT_FONT_FAMILY = "Consolas, 'Ubuntu Mono', monospace";
-
-export const getFontSizePref = (): number => {
-    const size = Number(getPreference('appearance.fontSize'));
-    if (!Number.isFinite(size) || size <= 0) {
-        return 13;
-    }
-    return Math.min(40, Math.max(8, size));
-};
+export const getFontSizePref = (): number =>
+    clampFontSize(Number(getPreference('appearance.fontSize')));
 
 export const getFontFamilyPref = (): string =>
     (getPreference('appearance.fontFamily') || '').trim() ||

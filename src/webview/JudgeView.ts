@@ -21,9 +21,8 @@ import {
     getHideOutputDifferencePref,
     updatePreference,
     getPythonCommand,
-    getFontSizePref,
-    getFontFamilyPref,
 } from '../preferences';
+import { getFont, setFont, openCphSettings } from '../fontSettings';
 import { setOnlineJudgeEnv, onlineJudgeEnv } from '../compiler';
 import { translations } from './translations';
 import { serializeForInlineScript } from '../utilsPure';
@@ -176,31 +175,20 @@ class JudgeViewProvider implements vscode.WebviewViewProvider {
                     }
 
                     case 'open-settings': {
-                        vscode.commands.executeCommand(
-                            'workbench.action.openSettings',
-                            `@ext:${globalThis.context.extension.id}`,
-                        );
+                        openCphSettings();
                         break;
                     }
 
                     case 'set-font': {
-                        try {
-                            await updatePreference(
-                                'appearance.fontSize',
-                                message.fontSize,
-                                vscode.ConfigurationTarget.Global,
-                            );
-                            await updatePreference(
-                                'appearance.fontFamily',
-                                message.fontFamily,
-                                vscode.ConfigurationTarget.Global,
-                            );
-                        } catch (err) {
-                            globalThis.logger.error(
-                                'Failed to update font preference',
-                                err,
-                            );
-                        }
+                        setFont({
+                            fontSize: message.fontSize,
+                            fontFamily: message.fontFamily,
+                        });
+                        break;
+                    }
+
+                    case 'run-command': {
+                        vscode.commands.executeCommand(message.id);
                         break;
                     }
 
@@ -388,8 +376,8 @@ class JudgeViewProvider implements vscode.WebviewViewProvider {
             pythonCommand,
             cphSubmitServerFailed: hasSubmitServerFailed(),
             cphSubmitServerPort: config.port,
-            cphFontSize: getFontSizePref(),
-            cphFontFamily: getFontFamilyPref(),
+            cphFontSize: getFont().fontSize,
+            cphFontFamily: getFont().fontFamily,
         });
 
         const html = `

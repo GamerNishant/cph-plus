@@ -14,6 +14,7 @@ import {
 import CaseView from './CaseView';
 import Page from './Page';
 import { ImportCases } from './ImportCases';
+import { FontToolbar } from './FontToolbar';
 
 let storedLogs = '';
 let notificationTimeout: NodeJS.Timeout | undefined = undefined;
@@ -48,8 +49,6 @@ interface CustomWindow extends Window {
     pythonCommand: string;
     cphSubmitServerFailed?: boolean;
     cphSubmitServerPort?: number;
-    cphFontSize?: number;
-    cphFontFamily?: string;
 }
 declare const window: CustomWindow;
 
@@ -62,42 +61,6 @@ window.console.error = customLogger.bind(window.console, originalConsole.error);
 window.console.warn = customLogger.bind(window.console, originalConsole.warn);
 window.console.info = customLogger.bind(window.console, originalConsole.info);
 window.console.debug = customLogger.bind(window.console, originalConsole.debug);
-
-const MIN_FONT_SIZE = 8;
-const MAX_FONT_SIZE = 40;
-const DEFAULT_FONT_FAMILY = "Consolas, 'Ubuntu Mono', monospace";
-
-const FONT_CHOICES: { label: string; value: string }[] = [
-    { label: 'Consolas', value: DEFAULT_FONT_FAMILY },
-    { label: 'Cascadia Code', value: "'Cascadia Code', Consolas, monospace" },
-    { label: 'Cascadia Mono', value: "'Cascadia Mono', Consolas, monospace" },
-    { label: 'Fira Code', value: "'Fira Code', Consolas, monospace" },
-    {
-        label: 'JetBrains Mono',
-        value: "'JetBrains Mono', Consolas, monospace",
-    },
-    { label: 'Source Code Pro', value: "'Source Code Pro', monospace" },
-    { label: 'Courier New', value: "'Courier New', monospace" },
-    { label: 'Lucida Console', value: "'Lucida Console', monospace" },
-    { label: 'Menlo', value: 'Menlo, Monaco, monospace' },
-    { label: 'Ubuntu Mono', value: "'Ubuntu Mono', monospace" },
-    {
-        label: 'Editor font',
-        value: 'var(--vscode-editor-font-family), monospace',
-    },
-    { label: 'UI font', value: 'var(--vscode-font-family), sans-serif' },
-];
-
-const applyFont = (fontSize: number, fontFamily: string) => {
-    const rootStyle = document.documentElement.style;
-    rootStyle.setProperty('--cph-font-size', `${fontSize}px`);
-    rootStyle.setProperty('--cph-font-family', fontFamily);
-};
-
-applyFont(
-    window.cphFontSize || 13,
-    window.cphFontFamily || DEFAULT_FONT_FAMILY,
-);
 
 const uid = Math.floor(Math.random() * 1000000000);
 
@@ -184,26 +147,6 @@ function Judge(props: {
             document.body.classList.remove('no-scroll');
         }
     }, [infoPageVisible]);
-
-    const [fontSize, setFontSize] = useState<number>(window.cphFontSize || 13);
-    const [fontFamily, setFontFamily] = useState<string>(
-        window.cphFontFamily || DEFAULT_FONT_FAMILY,
-    );
-
-    useEffect(() => {
-        applyFont(fontSize, fontFamily);
-    }, [fontSize, fontFamily]);
-
-    const changeFont = (newSize: number, newFamily: string) => {
-        const size = Math.min(MAX_FONT_SIZE, Math.max(MIN_FONT_SIZE, newSize));
-        setFontSize(size);
-        setFontFamily(newFamily);
-        sendMessageToVSCode({
-            command: 'set-font',
-            fontSize: size,
-            fontFamily: newFamily,
-        });
-    };
 
     useEffect(() => {
         if (!window.showLiveUserCount) {
@@ -339,11 +282,6 @@ function Judge(props: {
                 }
                 case 'ext-logs': {
                     setExtLogs(data.logs);
-                    break;
-                }
-                case 'update-font': {
-                    setFontSize(data.fontSize);
-                    setFontFamily(data.fontFamily);
                     break;
                 }
             }
@@ -1086,56 +1024,7 @@ with open(sys.argv[2], "r") as f:
                         </details>
                     </div>
                 )}
-                <div className="font-toolbar">
-                    <button
-                        className="btn btn-black"
-                        title="Decrease font size"
-                        disabled={fontSize <= MIN_FONT_SIZE}
-                        onClick={() => changeFont(fontSize - 1, fontFamily)}
-                    >
-                        A−
-                    </button>
-                    <span
-                        className="font-size-label"
-                        title="Reset font size"
-                        onClick={() => changeFont(13, fontFamily)}
-                    >
-                        {fontSize}px
-                    </span>
-                    <button
-                        className="btn btn-black"
-                        title="Increase font size"
-                        disabled={fontSize >= MAX_FONT_SIZE}
-                        onClick={() => changeFont(fontSize + 1, fontFamily)}
-                    >
-                        A+
-                    </button>
-                    <select
-                        className="font-select"
-                        title="Font"
-                        value={
-                            FONT_CHOICES.some((f) => f.value === fontFamily)
-                                ? fontFamily
-                                : '__custom__'
-                        }
-                        onChange={(e) => {
-                            if (e.target.value !== '__custom__') {
-                                changeFont(fontSize, e.target.value);
-                            }
-                        }}
-                    >
-                        {FONT_CHOICES.map((f) => (
-                            <option key={f.value} value={f.value}>
-                                {f.label}
-                            </option>
-                        ))}
-                        {!FONT_CHOICES.some((f) => f.value === fontFamily) && (
-                            <option value="__custom__">
-                                Custom (settings)
-                            </option>
-                        )}
-                    </select>
-                </div>
+                <FontToolbar />
                 <div>{renderTimeoutAVSuggestion()}</div>
                 {window.showLiveUserCount && liveUserCount > 0 && (
                     <div className="liveUserCount">

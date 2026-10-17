@@ -38,9 +38,12 @@ import JudgeViewProvider from './webview/JudgeView';
 import {
     getRetainWebviewContextPref,
     getDefaultOnlineJudge,
-    getFontSizePref,
-    getFontFamilyPref,
 } from './preferences';
+import {
+    registerFontCommands,
+    setFontChangeListener,
+    handleConfigurationChange,
+} from './fontSettings';
 import TelemetryReporter from '@vscode/extension-telemetry';
 import config from './config';
 import localize from './i18n';
@@ -142,6 +145,13 @@ export function activate(context: vscode.ExtensionContext) {
     statusBarItem.command = 'cph.runTestCases';
 
     registerCommands(context);
+    registerFontCommands(context);
+    setFontChangeListener((font) => {
+        getJudgeViewProvider().extensionToJudgeViewMessage({
+            command: 'update-font',
+            ...font,
+        });
+    });
     setupCompanionServer();
     checkLaunchWebview();
 
@@ -163,11 +173,7 @@ export function activate(context: vscode.ExtensionContext) {
             });
         }
         if (e.affectsConfiguration('cph.appearance')) {
-            getJudgeViewProvider().extensionToJudgeViewMessage({
-                command: 'update-font',
-                fontSize: getFontSizePref(),
-                fontFamily: getFontFamilyPref(),
-            });
+            handleConfigurationChange();
         }
     });
 

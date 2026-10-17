@@ -222,6 +222,15 @@ export type SetFont = {
     fontFamily: string;
 };
 
+export type RunCommand = {
+    command: 'run-command';
+    id:
+        | 'cph.chooseFont'
+        | 'cph.chooseFontSize'
+        | 'cph.resetFont'
+        | 'cph.openSettings';
+};
+
 export type OpenSettings = {
     command: 'open-settings';
 };
@@ -248,7 +257,8 @@ export type WebviewToVSEvent =
     | SetHideOutputDiff
     | OpenSettings
     | OpenFile
-    | SetFont;
+    | SetFont
+    | RunCommand;
 
 export type RunningCommand = {
     command: 'running';

@@ -1054,35 +1054,86 @@ body.vscode-light .btn .color-orange {
 /* Font toolbar */
 .font-toolbar {
     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 12px;
+    margin: 10px 0;
+    padding: 6px 8px;
+    border: 1px solid var(--vscode-widget-border, rgba(128, 128, 128, 0.25));
+    border-radius: 4px;
+    background: var(--vscode-sideBar-background, transparent);
+}
+
+.font-toolbar-group {
+    display: flex;
     align-items: center;
     gap: 4px;
-    margin: 8px 0;
 }
 
-.font-toolbar .btn {
+.font-toolbar-grow {
+    flex: 1 1 160px;
+    min-width: 0;
+}
+
+.font-toolbar-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-right: 2px;
+    font-size: 12px;
+    opacity: 0.8;
+    white-space: nowrap;
+}
+
+.font-btn,
+.font-size-value {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 24px;
+    min-width: 24px;
+    padding: 0 4px;
     margin: 0;
-    padding: 2px 8px;
-    min-width: 32px;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    background: var(--vscode-button-secondaryBackground, rgba(128, 128, 128, 0.2));
+    color: var(--vscode-button-secondaryForeground, inherit);
+    cursor: pointer;
+    font-family: var(--vscode-font-family);
+    font-size: 12px;
 }
 
-.font-toolbar .btn:disabled {
+.font-btn:hover:not(:disabled),
+.font-size-value:hover {
+    background: var(--vscode-button-secondaryHoverBackground, rgba(128, 128, 128, 0.35));
+}
+
+.font-btn:focus-visible,
+.font-size-value:focus-visible,
+.font-select:focus-visible {
+    outline: 1px solid var(--vscode-focusBorder);
+    outline-offset: 1px;
+}
+
+.font-btn:disabled {
     opacity: 0.4;
     cursor: default;
 }
 
-.font-size-label {
-    min-width: 36px;
-    text-align: center;
-    cursor: pointer;
-    opacity: 0.85;
-    font-size: 12px;
+.font-size-value {
+    min-width: 32px;
+    font-variant-numeric: tabular-nums;
 }
 
 .font-select {
-    flex-grow: 1;
+    flex: 1 1 auto;
     min-width: 0;
+    height: 24px;
+    padding: 0 4px;
+    border-radius: 3px;
     background: var(--vscode-dropdown-background);
     color: var(--vscode-dropdown-foreground);
     border: 1px solid var(--vscode-dropdown-border, transparent);
-    padding: 3px 4px;
+    font-family: var(--vscode-font-family);
+    font-size: 12px;
 }
