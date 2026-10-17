@@ -1,0 +1,369 @@
+/* eslint no-var: off */
+import TelemetryReporter from '@vscode/extension-telemetry';
+import * as vscode from 'vscode';
+
+/** Valid name for a VS Code preference section for the extension */
+export type prefSection =
+    | 'general.saveLocation'
+    | 'general.defaultLanguage'
+    | 'general.defaultOnlineJudge'
+    | 'general.timeOut'
+    | 'general.hideStderrorWhenCompiledOK'
+    | 'general.ignoreSTDERROR'
+    | 'general.firstTime'
+    | 'general.includeProblemIndex'
+    | 'general.wordRegex'
+    | 'general.useShortCodeForcesName'
+    | 'general.useShortLuoguName'
+    | 'general.useShortAtCoderName'
+    | 'general.menuChoices'
+    | 'language.c.Args'
+    | 'language.c.SubmissionCompiler'
+    | 'language.c.Command'
+    | 'language.c.OutputArg'
+    | 'language.cpp.Args'
+    | 'language.cpp.SubmissionCompiler'
+    | 'language.cpp.Command'
+    | 'language.cpp.OutputArg'
+    | 'language.csharp.Args'
+    | 'language.csharp.SubmissionCompiler'
+    | 'language.csharp.Command'
+    | 'language.go.Args'
+    | 'language.go.SubmissionCompiler'
+    | 'language.go.Command'
+    | 'language.rust.Args'
+    | 'language.rust.SubmissionCompiler'
+    | 'language.rust.Command'
+    | 'language.java.Args'
+    | 'language.java.SubmissionCompiler'
+    | 'language.java.Command'
+    | 'language.kotlin.Args'
+    | 'language.kotlin.SubmissionCompiler'
+    | 'language.kotlin.Command'
+    | 'language.js.Args'
+    | 'language.js.SubmissionCompiler'
+    | 'language.js.Command'
+    | 'language.python.Args'
+    | 'language.python.SubmissionCompiler'
+    | 'language.python.Command'
+    | 'language.ruby.Args'
+    | 'language.ruby.SubmissionCompiler'
+    | 'language.ruby.Command'
+    | 'language.haskell.Args'
+    | 'language.haskell.SubmissionCompiler'
+    | 'language.haskell.Command'
+    | 'language.cangjie.Args'
+    // | 'language.cangjie.SubmissionCompiler'  // Not support now
+    | 'language.cangjie.Command'
+    | 'general.retainWebviewContext'
+    | 'general.autoShowJudge'
+    | 'general.defaultLanguageTemplateFileLocation'
+    | 'general.doTemplateFileVariableReplacement'
+    | 'general.remoteServerAddress'
+    | 'general.showLiveUserCount'
+    | 'general.hideOutputDifference'
+    | 'appearance.fontSize'
+    | 'appearance.fontFamily';
+
+export type Language = {
+    name: LangNames;
+    compiler: string;
+    args: string[];
+    skipCompile: boolean;
+};
+
+export type LangNames =
+    | 'python'
+    | 'ruby'
+    | 'c'
+    | 'cpp'
+    | 'cc'
+    | 'cxx'
+    | 'rust'
+    | 'java'
+    | 'kotlin'
+    | 'js'
+    | 'go'
+    | 'hs'
+    | 'csharp'
+    | 'cangjie';
+
+export type TestCase = {
+    input: string;
+    output: string;
+    id: number;
+};
+
+export type Problem = {
+    name: string;
+    url: string;
+    interactive: boolean;
+    memoryLimit: number;
+    timeLimit: number;
+    group: string;
+    tests: TestCase[];
+    srcPath: string;
+    local?: boolean;
+    customCheckerPath?: string;
+};
+
+export type Case = {
+    id: number;
+    result: RunResult | null;
+    testcase: TestCase;
+};
+
+export type Run = {
+    stdout: string;
+    stderr: string;
+    code: number | null;
+    signal: string | null;
+    time: number;
+    timeOut: boolean;
+};
+
+export type CustomCheckerRun = {
+    command: string;
+} & Run;
+
+export type DiffLine = {
+    lineNumber: number;
+    expected: string | null;
+    received: string | null;
+    type: 'match' | 'changed' | 'missing' | 'extra';
+};
+
+export type TokenDiff = {
+    token: string;
+    status: 'match' | 'extra' | 'missing';
+};
+
+export type DiffResult = {
+    isMatch: boolean;
+    lines: DiffLine[];
+    summary: string;
+    tokenDiff: TokenDiff[];
+};
+
+export type RunResult = {
+    pass: boolean | null;
+    id: number;
+    diff?: DiffResult;
+    checkerRun?: CustomCheckerRun;
+} & Run;
+
+export type WebviewMessageCommon = {
+    problem: Problem;
+};
+
+export type RunSingleCommand = {
+    command: 'run-single-and-save';
+    id: number;
+} & WebviewMessageCommon;
+
+export type RunAllCommand = {
+    command: 'run-all-and-save';
+} & WebviewMessageCommon;
+
+export type OnlineJudgeEnv = {
+    command: 'online-judge-env';
+    value: string;
+};
+
+export type KillRunningCommand = {
+    command: 'kill-running';
+} & WebviewMessageCommon;
+
+export type SaveCommand = {
+    command: 'save';
+} & WebviewMessageCommon;
+
+export type DeleteTcsCommand = {
+    command: 'delete-tcs';
+} & WebviewMessageCommon;
+
+export type SubmitCf = {
+    command: 'submitCf';
+} & WebviewMessageCommon;
+
+export type SubmitCSES = {
+    command: 'submitCSES';
+} & WebviewMessageCommon;
+
+export type SubmitKattis = {
+    command: 'submitKattis';
+} & WebviewMessageCommon;
+
+export type GetInitialProblem = {
+    command: 'get-initial-problem';
+};
+
+export type CreateLocalProblem = {
+    command: 'create-local-problem';
+};
+
+export type OpenUrl = {
+    command: 'url';
+    url: string;
+};
+
+export type GetExtLogs = {
+    command: 'get-ext-logs';
+};
+
+export type SetHideOutputDiff = {
+    command: 'set-hide-output-diff';
+    value: boolean;
+};
+
+export type SetFont = {
+    command: 'set-font';
+    fontSize: number;
+    fontFamily: string;
+};
+
+export type OpenSettings = {
+    command: 'open-settings';
+};
+
+export type OpenFile = {
+    command: 'open-file';
+    path: string;
+};
+
+export type WebviewToVSEvent =
+    | RunAllCommand
+    | GetInitialProblem
+    | CreateLocalProblem
+    | RunSingleCommand
+    | KillRunningCommand
+    | SaveCommand
+    | DeleteTcsCommand
+    | SubmitCf
+    | SubmitCSES
+    | OnlineJudgeEnv
+    | SubmitKattis
+    | OpenUrl
+    | GetExtLogs
+    | SetHideOutputDiff
+    | OpenSettings
+    | OpenFile
+    | SetFont;
+
+export type RunningCommand = {
+    command: 'running';
+    id: number;
+} & WebviewMessageCommon;
+
+export type CheckingCommand = {
+    command: 'checking';
+    id: number;
+} & WebviewMessageCommon;
+
+export type NotRunningCommand = {
+    command: 'not-running';
+};
+
+export type ResultCommand = {
+    command: 'run-single-result';
+    result: RunResult;
+} & WebviewMessageCommon;
+
+export type CompilingStartCommand = {
+    command: 'compiling-start';
+};
+
+export type CompilingStopCommand = {
+    command: 'compiling-stop';
+};
+
+export type RunAllInWebViewCommand = {
+    command: 'run-all';
+};
+
+export type WaitingForSubmitCommand = {
+    command: 'waiting-for-submit';
+};
+
+export type SubmitFinishedCommand = {
+    command: 'submit-finished';
+};
+
+export type NewProblemCommand = {
+    command: 'new-problem';
+    problem: Problem | undefined;
+    onlineJudgeEnv?: boolean;
+};
+
+export type RemoteMessageCommand = {
+    command: 'remote-message';
+    message: string;
+};
+
+export type ExtLogsCommand = {
+    command: 'ext-logs';
+    logs: string;
+};
+
+export type UpdateOnlineJudgeEnvCommand = {
+    command: 'update-online-judge-env';
+    value: boolean;
+};
+
+export type SubmitServerFailedCommand = {
+    command: 'submit-server-failed';
+    port: number;
+};
+
+export type UpdateFontCommand = {
+    command: 'update-font';
+    fontSize: number;
+    fontFamily: string;
+};
+
+export type VSToWebViewMessage =
+    | ResultCommand
+    | RunningCommand
+    | CheckingCommand
+    | RunAllInWebViewCommand
+    | CompilingStartCommand
+    | CompilingStopCommand
+    | WaitingForSubmitCommand
+    | SubmitFinishedCommand
+    | NotRunningCommand
+    | RemoteMessageCommand
+    | NewProblemCommand
+    | ExtLogsCommand
+    | UpdateOnlineJudgeEnvCommand
+    | SubmitServerFailedCommand
+    | UpdateFontCommand;
+
+export type CphEmptyResponse = {
+    empty: true;
+};
+
+export type CphSubmitResponse = {
+    url: string;
+    empty: false;
+    problemName: string;
+    sourceCode: string;
+    languageId: number;
+};
+
+export type WebViewpersistenceState = {
+    dialogCloseDate: number;
+    feedbackDialogCloseDate?: number;
+    hasSeenFeedbackTooltip?: boolean;
+    catCompanionEnabled?: boolean;
+    totalLoads?: number;
+    hasSeenCompanionTooltip?: boolean;
+    rateDialogCloseDate?: number;
+};
+
+declare global {
+    var reporter: TelemetryReporter;
+    var context: vscode.ExtensionContext;
+    var remoteMessage: string | undefined;
+    var storedLogs: string;
+    var logger: any;
+}
