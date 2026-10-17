@@ -5,8 +5,7 @@ A fork of [Competitive Programming Helper (cph)](https://github.com/agrawal-d/cp
 ## Changes in this fork
 
 - **Font controls** for the test case input/output boxes, saved to your User settings so they apply in every window, workspace and file:
-  - **In the panel**: a Size row (− / + buttons; click the number to type an exact size), a Font dropdown, and a reset button.
-  - **In the panel's title bar**: zoom out, zoom in, choose font, and a gear that opens this extension's settings. The **…** menu also has "Set Test Case Font Size…" and "Reset Test Case Font".
+  - **In the panel's title bar**: a gear that opens this extension's settings. There are no font controls inside the panel.
   - **In the Command Palette** (Ctrl+Shift+P), type `CPH Plus`: Open Settings, Increase/Decrease Test Case Font Size, Set Test Case Font Size…, Choose Test Case Font… (includes a custom font option), Reset Test Case Font.
   - **In Settings**, under CPH Plus › Appearance: `cph.appearance.fontSize` and `cph.appearance.fontFamily`. Changes made there show up in the panel immediately.
 - **Removed footer buttons**: Support, Feedback, Cat, Bugs, About and the Set ONLINE_JUDGE toggle are gone. Import now sits next to "New Testcase". To control ONLINE_JUDGE, use the `cph.general.defaultOnlineJudge` setting.

@@ -5,7 +5,7 @@
     "license": "GPL-3.0-or-later",
     "icon": "icon.png",
     "publisher": "nishant",
-    "version": "2026.10.18",
+    "version": "2026.10.19",
     "engines": {
         "vscode": "^1.52.0"
     },
@@ -98,34 +98,9 @@
             ],
             "view/title": [
                 {
-                    "command": "cph.decreaseFontSize",
-                    "when": "view == cph.judgeView",
-                    "group": "navigation@1"
-                },
-                {
-                    "command": "cph.increaseFontSize",
-                    "when": "view == cph.judgeView",
-                    "group": "navigation@2"
-                },
-                {
-                    "command": "cph.chooseFont",
-                    "when": "view == cph.judgeView",
-                    "group": "navigation@3"
-                },
-                {
                     "command": "cph.openSettings",
                     "when": "view == cph.judgeView",
-                    "group": "navigation@4"
-                },
-                {
-                    "command": "cph.chooseFontSize",
-                    "when": "view == cph.judgeView",
-                    "group": "font@1"
-                },
-                {
-                    "command": "cph.resetFont",
-                    "when": "view == cph.judgeView",
-                    "group": "font@2"
+                    "group": "navigation@1"
                 }
             ]
         },
@@ -155,14 +130,14 @@
                         "maximum": 40,
                         "scope": "application",
                         "order": 0,
-                        "markdownDescription": "Font size, in pixels, of the test case input and output boxes. Saved once and used in every window and workspace.\n\nYou can also change it with the **−** / **+** buttons in the CPH panel, or with **CPH Plus: Increase/Decrease Test Case Font Size** in the Command Palette."
+                        "markdownDescription": "Font size, in pixels, of the test case input and output boxes. Applies in every window and workspace.\n\nAlso available in the Command Palette: **CPH Plus: Increase/Decrease Test Case Font Size**."
                     },
                     "cph.appearance.fontFamily": {
                         "type": "string",
                         "default": "Consolas, 'Ubuntu Mono', monospace",
                         "scope": "application",
                         "order": 1,
-                        "markdownDescription": "Font of the test case input and output boxes. Use any installed font name, or a CSS font list such as `'Fira Code', monospace`. Saved once and used in every window and workspace.\n\nTo pick from a list, use the **Font** dropdown in the CPH panel or **CPH Plus: Choose Test Case Font…** in the Command Palette."
+                        "markdownDescription": "Font of the test case input and output boxes. Use any installed font name, or a CSS font list such as `'Fira Code', monospace`. Applies in every window and workspace.\n\nTo pick from a list, run **CPH Plus: Choose Test Case Font…** from the Command Palette."
                     }
                 }
             },

@@ -216,21 +216,6 @@ export type SetHideOutputDiff = {
     value: boolean;
 };
 
-export type SetFont = {
-    command: 'set-font';
-    fontSize: number;
-    fontFamily: string;
-};
-
-export type RunCommand = {
-    command: 'run-command';
-    id:
-        | 'cph.chooseFont'
-        | 'cph.chooseFontSize'
-        | 'cph.resetFont'
-        | 'cph.openSettings';
-};
-
 export type OpenSettings = {
     command: 'open-settings';
 };
@@ -256,9 +241,7 @@ export type WebviewToVSEvent =
     | GetExtLogs
     | SetHideOutputDiff
     | OpenSettings
-    | OpenFile
-    | SetFont
-    | RunCommand;
+    | OpenFile;
 
 export type RunningCommand = {
     command: 'running';

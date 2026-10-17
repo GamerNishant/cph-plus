@@ -22,7 +22,7 @@ import {
     updatePreference,
     getPythonCommand,
 } from '../preferences';
-import { getFont, setFont, openCphSettings } from '../fontSettings';
+import { getFont, openCphSettings } from '../fontSettings';
 import { setOnlineJudgeEnv, onlineJudgeEnv } from '../compiler';
 import { translations } from './translations';
 import { serializeForInlineScript } from '../utilsPure';
@@ -176,19 +176,6 @@ class JudgeViewProvider implements vscode.WebviewViewProvider {
 
                     case 'open-settings': {
                         openCphSettings();
-                        break;
-                    }
-
-                    case 'set-font': {
-                        setFont({
-                            fontSize: message.fontSize,
-                            fontFamily: message.fontFamily,
-                        });
-                        break;
-                    }
-
-                    case 'run-command': {
-                        vscode.commands.executeCommand(message.id);
                         break;
                     }
 

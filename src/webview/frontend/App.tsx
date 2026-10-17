@@ -14,7 +14,7 @@ import {
 import CaseView from './CaseView';
 import Page from './Page';
 import { ImportCases } from './ImportCases';
-import { FontToolbar } from './FontToolbar';
+import './fontStore';
 
 let storedLogs = '';
 let notificationTimeout: NodeJS.Timeout | undefined = undefined;
@@ -1024,7 +1024,6 @@ with open(sys.argv[2], "r") as f:
                         </details>
                     </div>
                 )}
-                <FontToolbar />
                 <div>{renderTimeoutAVSuggestion()}</div>
                 {window.showLiveUserCount && liveUserCount > 0 && (
                     <div className="liveUserCount">
